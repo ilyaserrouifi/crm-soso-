@@ -2,7 +2,8 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Niche CRM</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Niche CRM - Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/theme.css">
   <link rel="stylesheet" href="assets/style.css">
@@ -11,41 +12,81 @@
   <script src="assets/map.js"></script>
 </head>
 <body>
-<div style="display:flex;min-height:100vh">
-  <aside style="width:260px;background:#0f111a;border-right:1px solid #1e293b">
+<div style="display: flex; min-height: 100vh;">
+  
+  <!-- SIDEBAR avec LOGO -->
+  <aside style="width: 260px; background: #0f111a; border-right: 1px solid #1e293b; display: flex; flex-direction: column;">
+    
+    <!-- LOGO ICI -->
     <div class="sidebar-logo">
-      <div style="width:36px;height:36px;background:#38bdf8;border-radius:10px"></div>
-      <div><div class="sidebar-logo-text">Niche CRM</div><div class="sidebar-logo-version">v1.0</div></div>
+      <img src="assets/images/logo.svg" alt="Niche CRM Logo">
+      <div>
+        <div class="sidebar-logo-text">Niche CRM</div>
+        <div class="sidebar-logo-version">Enterprise OS</div>
+      </div>
     </div>
+    
     <div class="sb-section"><div class="sb-section-label">PRINCIPAL</div></div>
     <div class="sb-item active"><span class="icon">📊</span> Dashboard</div>
     <div class="sb-item"><span class="icon">👥</span> People</div>
     <div class="sb-item"><span class="icon">⟶</span> Pipeline</div>
     <div class="sb-item"><span class="icon">📁</span> Projects</div>
-    <div class="sb-section mt-20"><div class="sb-section-label">CLIENT</div></div>
+    <div class="sb-item"><span class="icon">💰</span> Finance</div>
+    <div class="sb-item"><span class="icon">📈</span> Analytics</div>
+    
+    <div class="sb-section" style="margin-top: auto;"><div class="sb-section-label">CLIENT</div></div>
     <div class="sb-item" onclick="window.location='client-portal.html'"><span class="icon">🌐</span> Portail client</div>
+    
+    <div style="padding: 16px; border-top: 1px solid #1e293b; margin-top: auto;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div style="width: 32px; height: 32px; background: linear-gradient(135deg,#38bdf8,#0ea5e9); border-radius: 10px;"></div>
+        <div><div style="font-size: 13px; font-weight: 600;">Admin</div><div style="font-size: 10px; color: #64748b;">Super Admin</div></div>
+      </div>
+    </div>
   </aside>
   
-  <main style="flex:1;padding:24px">
-    <h1 style="font-size:28px;margin-bottom:8px">Tableau de bord</h1>
-    <p style="color:#64748b;margin-bottom:24px">Bienvenue sur Niche CRM</p>
+  <!-- MAIN CONTENT -->
+  <main style="flex: 1; padding: 24px; background: #0a0c15;">
+    <h1 style="font-size: 28px; margin-bottom: 8px;">Tableau de bord</h1>
+    <p style="color: #64748b; margin-bottom: 24px;">Bienvenue sur Niche CRM — Vue d'ensemble de votre activité</p>
     
-    <div class="grid-4">
-      <div class="metric"><div class="metric-label">💰 Revenus</div><div class="metric-value">0 €</div></div>
-      <div class="metric"><div class="metric-label">👥 Clients</div><div class="metric-value">0</div></div>
-      <div class="metric"><div class="metric-label">📁 Projets</div><div class="metric-value">0</div></div>
-      <div class="metric"><div class="metric-label">⭐ Deals</div><div class="metric-value">0</div></div>
+    <!-- STATS CARDS -->
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px;">
+      <div style="background: #111827; border: 1px solid #1e293b; border-radius: 16px; padding: 20px;">
+        <div style="font-size: 28px; font-weight: 700;">0 €</div>
+        <div style="font-size: 12px; color: #64748b;">Revenus</div>
+      </div>
+      <div style="background: #111827; border: 1px solid #1e293b; border-radius: 16px; padding: 20px;">
+        <div style="font-size: 28px; font-weight: 700;">0</div>
+        <div style="font-size: 12px; color: #64748b;">Clients</div>
+      </div>
+      <div style="background: #111827; border: 1px solid #1e293b; border-radius: 16px; padding: 20px;">
+        <div style="font-size: 28px; font-weight: 700;">0</div>
+        <div style="font-size: 12px; color: #64748b;">Projets</div>
+      </div>
+      <div style="background: #111827; border: 1px solid #1e293b; border-radius: 16px; padding: 20px;">
+        <div style="font-size: 28px; font-weight: 700;">0</div>
+        <div style="font-size: 12px; color: #64748b;">Deals</div>
+      </div>
     </div>
     
-    <div class="card mt-20">
-      <div class="card-header"><div class="card-title">🗺️ Localisation des clients</div><span class="badge-blue">3 clients</span></div>
-      <div id="client-map" style="height:350px;width:100%"></div>
+    <!-- CARTE CLIENTS -->
+    <div style="background: #111827; border: 1px solid #1e293b; border-radius: 16px; overflow: hidden;">
+      <div style="padding: 16px 20px; border-bottom: 1px solid #1e293b; display: flex; justify-content: space-between;">
+        <div style="font-weight: 600;">🗺️ Localisation des clients</div>
+        <span style="background: rgba(59,130,246,0.1); color: #3b82f6; padding: 4px 10px; border-radius: 20px; font-size: 11px;">3 clients</span>
+      </div>
+      <div id="client-map" style="height: 350px; width: 100%;"></div>
     </div>
+    
   </main>
 </div>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  if(typeof initMap === 'function') initMap('client-map');
+  if (typeof initMap === 'function') {
+    initMap('client-map');
+  }
 });
 </script>
 </body>

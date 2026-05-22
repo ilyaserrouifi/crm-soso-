@@ -361,3 +361,55 @@ hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
     display: inline;
   }
 }
+
+/* ========================================
+   LOGO STYLES - CORRECTED
+   ========================================== */
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px;
+  border-bottom: 1px solid #1e293b;
+  margin-bottom: 8px;
+}
+
+.sidebar-logo img {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+}
+
+.sidebar-logo-text {
+  font-size: 16px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.sidebar-logo-version {
+  font-size: 9px;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+/* Logo dans le header (optionnel) */
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-logo img {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+}
+
+.header-logo span {
+  font-size: 14px;
+  font-weight: 600;
+  color: #38bdf8;
+}
