@@ -1,107 +1,142 @@
 function renderDashboard() {
-  // جلب البيانات الحقيقية من localStorage
   const deals = JSON.parse(localStorage.getItem('crm_deals') || '[]');
-  const projects = JSON.parse(localStorage.getItem('crm_projects') || '[]');
-  const people = JSON.parse(localStorage.getItem('crm_people') || '[]');
-  
-  // حساب الأرقام الحقيقية
-  const totalDeals = deals.length;
-  const wonDeals = deals.filter(d => d.stage === 'won').length;
-  const totalValue = deals.reduce((sum, d) => sum + (d.value || 0), 0);
-  const activeProjects = projects.filter(p => p.status === 'Active').length;
-  const totalPeople = people.length;
-  
-  // حساب MRR (revenus récurrents)
-  const mrr = totalValue;
-  const expenses = 18200;
-  const netProfit = mrr - expenses;
-  const margin = mrr ? Math.round((netProfit / mrr) * 100) : 0;
-  
-  // إحصائيات pipeline
-  const leadCount = deals.filter(d => d.stage === 'lead').length;
-  const contactedCount = deals.filter(d => d.stage === 'contacted').length;
-  const meetingCount = deals.filter(d => d.stage === 'meeting').length;
-  const proposalCount = deals.filter(d => d.stage === 'proposal').length;
-  const wonCount = wonDeals;
+  const wonDeals = deals.filter(d => d.stage === 'won');
+  const totalRevenue = wonDeals.reduce((sum, d) => sum + (d.value || 0), 0);
   
   return `
-<div class="page-head">
-  <div>
-    <div class="page-head-title">Tableau de bord</div>
-    <div class="page-head-sub">${new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</div>
+<div class="dashboard-container">
+  <!-- Welcome Section -->
+  <div class="welcome-section">
+    <h1>Tableau de bord</h1>
+    <p>Bienvenue sur Niche CRM — Vue d'ensemble de votre activité</p>
   </div>
-  <button class="btn btn-ghost" onclick="exportReport()">📥 Exporter</button>
-</div>
-
-<div class="grid-4">
-  <div class="metric">
-    <div class="metric-label">Total deals</div>
-    <div class="metric-value" style="color:var(--blue)">${totalDeals}</div>
-    <div class="metric-delta up">↓ +${Math.round(totalDeals * 0.12)} ce mois</div>
-  </div>
-  <div class="metric">
-    <div class="metric-label">Valeur totale</div>
-    <div class="metric-value" style="color:var(--teal)">$${totalValue.toLocaleString()}</div>
-    <div class="metric-delta up">↑ +8%</div>
-  </div>
-  <div class="metric">
-    <div class="metric-label">Projets actifs</div>
-    <div class="metric-value" style="color:var(--green)">${activeProjects}</div>
-    <div class="metric-delta up">En cours</div>
-  </div>
-  <div class="metric">
-    <div class="metric-label">Équipe</div>
-    <div class="metric-value" style="color:var(--amber)">${totalPeople}</div>
-    <div class="metric-delta up">Membres</div>
-  </div>
-</div>
-
-<div class="grid-2-1 mt-20">
-  <div class="card">
-    <div class="card-header">
-      <div class="card-title-lg">Pipeline snapshot</div>
-      <span class="badge badge-accent">$${totalValue.toLocaleString()} total</span>
+  
+  <!-- Stats Cards -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon">💰</div>
+      <div class="stat-value">${totalRevenue.toLocaleString()} €</div>
+      <div class="stat-label">Revenus</div>
+      <span class="stat-trend up">↑ +12%</span>
     </div>
-    <div style="display:flex;flex-direction:column;gap:10px;">
-      ${[
-        { stage:'Lead', count: leadCount, color:'var(--text3)' },
-        { stage:'Contacted', count: contactedCount, color:'var(--blue)' },
-        { stage:'Meeting', count: meetingCount, color:'var(--teal)' },
-        { stage:'Proposal', count: proposalCount, color:'var(--accent)' },
-        { stage:'Won', count: wonCount, color:'var(--green)' }
-      ].map(s => {
-        const maxCount = Math.max(leadCount, contactedCount, meetingCount, proposalCount, wonCount, 1);
-        const width = Math.round((s.count / maxCount) * 100);
-        return `
-        <div style="display:flex;align-items:center;gap:12px;">
-          <div style="width:80px;font-size:12px;color:var(--text2);flex-shrink:0">${s.stage}</div>
-          <div style="flex:1;height:8px;background:var(--bg4);border-radius:4px;overflow:hidden;">
-            <div style="height:100%;width:${width}%;background:${s.color};border-radius:4px;"></div>
-          </div>
-          <div style="width:30px;font-size:11px;color:var(--text3);text-align:right">${s.count}</div>
-        </div>`;
-      }).join('')}
+    <div class="stat-card">
+      <div class="stat-icon">👥</div>
+      <div class="stat-value">${deals.length}</div>
+      <div class="stat-label">Clients</div>
+      <span class="stat-trend up">↑ +8%</span>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">📁</div>
+      <div class="stat-value">${deals.filter(d => d.stage === 'lead').length}</div>
+      <div class="stat-label">Leads</div>
+      <span class="stat-trend up">↑ +5%</span>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">⭐</div>
+      <div class="stat-value">${wonDeals.length}</div>
+      <div class="stat-label">Deals gagnés</div>
+      <span class="stat-trend up">↑ +3</span>
     </div>
   </div>
   
-  <div class="card">
-    <div class="card-header">
-      <div class="card-title-lg">Finance</div>
-      <span class="badge badge-green">${margin}% marge</span>
+  <!-- Charts Section -->
+  <div class="charts-row">
+    <div class="chart-card">
+      <div class="chart-header">
+        <h3>📈 Revenus mensuels</h3>
+      </div>
+      <div class="chart-body">
+        <canvas id="revenueChart" height="250"></canvas>
+      </div>
     </div>
-    <div style="display:flex;flex-direction:column;gap:12px;">
-      <div style="display:flex;justify-content:space-between;"><span style="color:var(--text2)">MRR</span><span style="color:var(--green);font-family:mono">$${mrr.toLocaleString()}</span></div>
-      <div style="display:flex;justify-content:space-between;"><span style="color:var(--text2)">Dépenses</span><span style="color:var(--red);font-family:mono">$${expenses.toLocaleString()}</span></div>
-      <div style="display:flex;justify-content:space-between;"><span style="color:var(--text2)">Bénéfice net</span><span style="color:var(--teal);font-family:mono;font-weight:600">$${netProfit.toLocaleString()}</span></div>
-      <div class="progress mt-8"><div class="progress-fill" style="width:${margin}%;background:var(--green)"></div></div>
+    <div class="chart-card">
+      <div class="chart-header">
+        <h3>🎯 Pipeline</h3>
+      </div>
+      <div class="chart-body">
+        <canvas id="pipelineChart" height="250"></canvas>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Recent Activity -->
+  <div class="activity-card">
+    <div class="activity-header">
+      <h3>🔄 Activité récente</h3>
+      <a href="#">Voir tout →</a>
+    </div>
+    <div class="activity-list">
+      ${deals.slice(0,5).map(d => `
+        <div class="activity-item">
+          <div class="activity-icon">🎯</div>
+          <div class="activity-content">
+            <div class="activity-title">Nouveau deal: ${d.company}</div>
+            <div class="activity-time">${new Date(d.createdAt).toLocaleDateString()}</div>
+          </div>
+          <div class="activity-value">${d.value ? d.value.toLocaleString() + ' €' : ''}</div>
+        </div>
+      `).join('')}
+      ${deals.length === 0 ? '<div class="empty-state">Aucune activité récente</div>' : ''}
     </div>
   </div>
 </div>
 
+<style>
+.dashboard-container { padding: 24px 32px; }
+.welcome-section { margin-bottom: 28px; }
+.welcome-section h1 { font-size: 28px; font-weight: 700; margin-bottom: 4px; }
+.welcome-section p { color: var(--text-tertiary); font-size: 14px; }
+
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 28px; }
+.stat-card { background: var(--bg-card); border: 1px solid var(--border-medium); border-radius: 16px; padding: 20px; transition: all 0.2s; }
+.stat-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+.stat-icon { font-size: 28px; margin-bottom: 12px; }
+.stat-value { font-size: 28px; font-weight: 700; margin-bottom: 4px; }
+.stat-label { font-size: 13px; color: var(--text-tertiary); }
+.stat-trend { font-size: 11px; padding: 2px 8px; border-radius: 20px; display: inline-block; margin-top: 8px; }
+.stat-trend.up { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+
+.charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 28px; }
+.chart-card { background: var(--bg-card); border: 1px solid var(--border-medium); border-radius: 16px; overflow: hidden; }
+.chart-header { padding: 16px 20px; border-bottom: 1px solid var(--border-medium); }
+.chart-header h3 { font-size: 14px; font-weight: 600; }
+.chart-body { padding: 20px; }
+
+.activity-card { background: var(--bg-card); border: 1px solid var(--border-medium); border-radius: 16px; overflow: hidden; }
+.activity-header { padding: 16px 20px; border-bottom: 1px solid var(--border-medium); display: flex; justify-content: space-between; align-items: center; }
+.activity-header h3 { font-size: 14px; font-weight: 600; }
+.activity-header a { font-size: 12px; color: var(--accent); text-decoration: none; }
+.activity-list { padding: 0 20px; }
+.activity-item { display: flex; align-items: center; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--border-medium); }
+.activity-item:last-child { border-bottom: none; }
+.activity-icon { width: 40px; height: 40px; background: var(--bg-tertiary); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+.activity-content { flex: 1; }
+.activity-title { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+.activity-time { font-size: 11px; color: var(--text-tertiary); }
+.activity-value { font-size: 13px; font-weight: 600; color: var(--accent); }
+.empty-state { text-align: center; padding: 40px; color: var(--text-tertiary); }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
-function exportReport() {
-  alert('Export en cours...');
-}
+setTimeout(() => {
+  const revenueCtx = document.getElementById('revenueChart')?.getContext('2d');
+  if (revenueCtx) {
+    new Chart(revenueCtx, {
+      type: 'line',
+      data: { labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin'], datasets: [{ label: 'Revenus (€)', data: [12500, 14200, 16800, 15400, 18900, ${totalRevenue}], borderColor: '#38bdf8', backgroundColor: 'rgba(56,189,248,0.1)', fill: true, tension: 0.3 }] },
+      options: { responsive: true, maintainAspectRatio: true }
+    });
+  }
+  const pipelineCtx = document.getElementById('pipelineChart')?.getContext('2d');
+  if (pipelineCtx) {
+    new Chart(pipelineCtx, {
+      type: 'bar',
+      data: { labels: ['Lead', 'Contacté', 'Rdv', 'Proposition', 'Gagné'], datasets: [{ label: 'Nombre', data: [${deals.filter(d=>d.stage==='lead').length}, ${deals.filter(d=>d.stage==='contacted').length}, ${deals.filter(d=>d.stage==='meeting').length}, ${deals.filter(d=>d.stage==='proposal').length}, ${deals.filter(d=>d.stage==='won').length}], backgroundColor: '#38bdf8', borderRadius: 8 }] },
+      options: { responsive: true, maintainAspectRatio: true }
+    });
+  }
+}, 100);
 </script>
   `;
 }

@@ -1,24 +1,63 @@
 function renderClients() {
-  const clients = [
-    { name:'TechCorp', service:'Ads + SEO', mrr:4800, health:92, pm:'Sara K.', status:'Active', inv:'Paid', roas:'3.2x', leads:47 },
-    { name:'GrowthLabs', service:'Design + Dev', mrr:3200, health:78, pm:'James M.', status:'Active', inv:'Paid', roas:'—', leads:12 },
-    { name:'NovaBrand', service:'Cold Outreach', mrr:2500, health:64, pm:'Lena T.', status:'At Risk', inv:'Pending', roas:'—', leads:8 },
-    { name:'SkylineHQ', service:'SEO', mrr:1800, health:88, pm:'Omar A.', status:'Active', inv:'Paid', roas:'—', leads:22 },
-    { name:'PulseMedia', service:'Ads', mrr:3600, health:45, pm:'Sara K.', status:'At Risk', inv:'Overdue', roas:'1.4x', leads:5 }
-  ];
+  const clients = JSON.parse(localStorage.getItem('crm_clients') || '[]');
+  const totalMrr = clients.reduce((sum, c) => sum + (c.mrr || 0), 0);
+  
   return `
-<div class="page-head"><div><div class="page-head-title">Clients</div><div class="page-head-sub">5 active clients · $15,900 MRR</div></div><button class="btn btn-primary">+ Onboard Client</button></div>
-<div class="grid-4">
-  <div class="metric"><div class="metric-label">Active Clients</div><div class="metric-value" style="color:var(--green)">5</div></div>
-  <div class="metric"><div class="metric-label">Total MRR</div><div class="metric-value" style="color:var(--accent2)">$15,900</div></div>
-  <div class="metric"><div class="metric-label">At Risk</div><div class="metric-value" style="color:var(--red)">2</div></div>
-  <div class="metric"><div class="metric-label">Avg Health</div><div class="metric-value" style="color:var(--amber)">73%</div></div>
+<div class="clients-container">
+  <div class="page-header">
+    <div>
+      <h1>Clients</h1>
+      <p>${clients.length} clients actifs · MRR: ${totalMrr.toLocaleString()} €</p>
+    </div>
+    <button class="btn-primary" onclick="addClient()">+ Nouveau client</button>
+  </div>
+  
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-value">${clients.length}</div><div class="stat-label">Total clients</div></div>
+    <div class="stat-card"><div class="stat-value">${clients.filter(c => c.status === 'active').length}</div><div class="stat-label">Actifs</div></div>
+    <div class="stat-card"><div class="stat-value">${totalMrr.toLocaleString()} €</div><div class="stat-label">MRR total</div></div>
+  </div>
+  
+  <div class="clients-list">
+    ${clients.map(c => `
+      <div class="client-card" onclick="viewClient('${c.id}')">
+        <div class="client-avatar" style="background:var(--accent)">${c.name?.charAt(0) || 'C'}</div>
+        <div class="client-info">
+          <div class="client-name">${c.name || '—'}</div>
+          <div class="client-contact">${c.email || ''}</div>
+        </div>
+        <div class="client-mrr">${c.mrr ? c.mrr.toLocaleString() + ' €' : '—'}</div>
+        <div class="client-status"><span class="badge-green">${c.status === 'active' ? 'Actif' : 'Inactif'}</span></div>
+      </div>
+    `).join('')}
+    ${clients.length === 0 ? '<div class="empty-state">Aucun client. Cliquez sur + Nouveau client</div>' : ''}
+  </div>
 </div>
-<div class="card mt-20"><div class="card-header"><div class="card-title-lg">All Clients</div><div style="display:flex;gap:8px;"><input class="input" placeholder="Search client..." style="width:180px"/><button class="btn btn-ghost">Filter</button></div></div>
-<div class="table-wrap"><table><thead><tr><th>Client</th><th>Service</th><th>MRR</th><th>PM</th><th>Health</th><th>ROAS</th><th>Leads</th><th>Invoice</th><th>Status</th></tr></thead>
-<tbody>${clients.map(c => `<tr><td><div style="display:flex;align-items:center;gap:9px;"><div class="avatar avatar-sm" style="background:var(--bg5);color:var(--text2);border:1px solid var(--border2)">${c.name.slice(0,2).toUpperCase()}</div><span style="font-size:13px;font-weight:500">${c.name}</span></div></td>
-<td style="font-size:12px;color:var(--text2)">${c.service}</td><td style="font-family:var(--mono);color:var(--green)">$${c.mrr.toLocaleString()}</td><td>${c.pm}</td>
-<td><div style="display:flex;align-items:center;gap:7px;"><div class="progress" style="width:55px"><div class="progress-fill" style="width:${c.health}%;background:${c.health>75?'var(--green)':c.health>50?'var(--amber)':'var(--red)'}"></div></div><span class="fs-11 text-3">${c.health}%</span></div></td>
-<td style="color:var(--teal)">${c.roas}</td><td>${c.leads}</td><td><span class="badge ${c.inv==='Paid'?'badge-green':c.inv==='Pending'?'badge-amber':'badge-red'}">${c.inv}</span></td>
-<td><span class="badge ${c.status==='Active'?'badge-green':'badge-red'}">${c.status}</span></td></tr>`).join('')}</tbody></table></div></div>`;
+
+<style>
+.clients-container { padding: 24px 32px; }
+.page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+.page-header h1 { font-size: 24px; font-weight: 700; }
+.page-header p { color: var(--text-tertiary); font-size: 13px; margin-top: 4px; }
+.stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 28px; }
+.stat-card { background: var(--bg-card); border: 1px solid var(--border-medium); border-radius: 16px; padding: 20px; text-align: center; }
+.stat-card .stat-value { font-size: 28px; font-weight: 700; }
+.stat-card .stat-label { font-size: 12px; color: var(--text-tertiary); margin-top: 4px; }
+.clients-list { display: flex; flex-direction: column; gap: 12px; }
+.client-card { background: var(--bg-card); border: 1px solid var(--border-medium); border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 16px; cursor: pointer; transition: all 0.2s; }
+.client-card:hover { border-color: var(--accent); transform: translateX(4px); }
+.client-avatar { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; color: #fff; }
+.client-info { flex: 1; }
+.client-name { font-weight: 600; margin-bottom: 4px; }
+.client-contact { font-size: 12px; color: var(--text-tertiary); }
+.client-mrr { font-weight: 600; color: var(--accent); }
+.badge-green { background: rgba(16, 185, 129, 0.1); color: #10b981; padding: 4px 10px; border-radius: 20px; font-size: 11px; }
+.empty-state { text-align: center; padding: 50px; color: var(--text-tertiary); }
+</style>
+
+<script>
+function addClient() { alert('Ajouter client'); }
+function viewClient(id) { alert('Voir client ' + id); }
+</script>
+  `;
 }

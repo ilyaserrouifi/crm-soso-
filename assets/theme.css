@@ -1,29 +1,50 @@
 :root {
-  --bg:    #0b0d13;
-  --bg2:   #111520;
-  --bg3:   #181d2c;
-  --bg4:   #1f2538;
-  --bg5:   #272e42;
-  --border:  rgba(255,255,255,.055);
-  --border2: rgba(255,255,255,.10);
-  --text:  #dde2f2;
-  --text2: #7a8499;
-  --text3: #3b4258;
-  --accent:     #6366f1;
-  --accent2:    #818cf8;
-  --accent-dim: rgba(99,102,241,.13);
-  --green:  #4ade80; --green-bg:  rgba(74,222,128,.09);
-  --red:    #f87171; --red-bg:    rgba(248,113,113,.09);
-  --amber:  #fbbf24; --amber-bg:  rgba(251,191,36,.09);
-  --blue:   #60a5fa; --blue-bg:   rgba(96,165,250,.09);
-  --teal:   #2dd4bf; --teal-bg:   rgba(45,212,191,.09);
-  --pink:   #f472b6; --pink-bg:   rgba(244,114,182,.09);
-  --r:    8px;
-  --r-sm: 5px;
-  --r-lg: 14px;
-  --sidebar: 224px;
-  --header:  54px;
-  --font: 'DM Sans', system-ui, sans-serif;
-  --mono: 'JetBrains Mono', monospace;
-  --t: all .16s ease;
+  --bg-deep: #0a0c15;
+  --bg-primary: #0f111a;
+  --bg-secondary: #151821;
+  --bg-tertiary: #1a1d2b;
+  --bg-card: #111827;
+  --bg-card-hover: #1e293b;
+  --bg-sidebar: #0f111a;
+  --bg-header: rgba(15, 17, 26, 0.85);
+  
+  --border-light: rgba(42, 47, 69, 0.4);
+  --border-medium: #1e293b;
+  --border-heavy: #334155;
+  
+  --accent: #38bdf8;
+  --accent-dark: #0ea5e9;
+  --accent-light: #7dd3fc;
+  --accent-glow: rgba(56, 189, 248, 0.1);
+  --accent-gradient: linear-gradient(135deg, #38bdf8, #0ea5e9);
+  
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --info: #3b82f6;
+  --purple: #8b5cf6;
+  
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-tertiary: #64748b;
+  
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 30px rgba(56, 189, 248, 0.15);
+  
+  --glass-bg: rgba(26, 29, 43, 0.7);
+  --glass-border: rgba(56, 189, 248, 0.1);
+  
+  --sidebar-width: 260px;
+  --sidebar-collapsed: 88px;
+  --header-height: 64px;
+  
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
 }
