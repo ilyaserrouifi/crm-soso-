@@ -58,12 +58,6 @@
     </div>
     <div class="sb-divider"></div>
     <div class="sb-section">
-      <div class="sb-section-label">System</div>
-      <div class="sb-item" data-module="settings">
-        <span class="icon">⚙</span> Settings
-      </div>
-    </div>
-    <div class="sb-section">
       <div class="sb-item" data-module="settings">
         <span class="icon">⚙</span> Settings
       </div>
@@ -111,7 +105,7 @@ const modules = {
   projects:  typeof renderProjects  !== 'undefined' ? renderProjects  : null,
   finance:   typeof renderFinance   !== 'undefined' ? renderFinance   : null,
   analytics: typeof renderAnalytics !== 'undefined' ? renderAnalytics : null,
-  settings:  typeof renderSettings !== 'undefined' ? renderSettings : null,
+  settings:  null,
 };
 
 const sectionNames = {
@@ -122,7 +116,6 @@ const sectionNames = {
   projects:  'Projects',
   finance:   'Finance',
   analytics: 'Analytics',
-  settings:  'Settings',
   settings:  'Settings',
 };
 

@@ -1,21 +1,54 @@
 function renderPeople() {
-  const callers = [
-    { name:'Sara K.', phone:'+1 555-0101', gmail:'sara@agency.com', start:'Jan 2026', niche:'SaaS', salary:'$1,200/mo', calls:52, pickups:18, meetings:3, score:'A', sc:'badge-green' },
-    { name:'James M.', phone:'+1 555-0102', gmail:'james@agency.com', start:'Feb 2026', niche:'Ecom', salary:'$1,000/mo', calls:47, pickups:14, meetings:2, score:'A', sc:'badge-green' },
-    { name:'Omar A.', phone:'+1 555-0103', gmail:'omar@agency.com', start:'Mar 2026', niche:'Agency', salary:'$900/mo', calls:31, pickups:9, meetings:1, score:'B', sc:'badge-blue' },
-    { name:'Kevin L.', phone:'+1 555-0104', gmail:'kevin@agency.com', start:'Apr 2026', niche:'SaaS', salary:'$800/mo', calls:18, pickups:4, meetings:0, score:'D', sc:'badge-red' }
-  ];
+  // جلب البيانات الحقيقية
+  const callers = JSON.parse(localStorage.getItem('crm_callers') || '[]');
+  const outreachers = JSON.parse(localStorage.getItem('crm_outreachers') || '[]');
+  const freelancers = JSON.parse(localStorage.getItem('crm_freelancers') || '[]');
+  
+  const totalCallers = callers.length;
+  const totalOutreachers = outreachers.length;
+  const totalFreelancers = freelancers.length;
+  
   return `
-<div class="page-head"><div><div class="page-head-title">People</div><div class="page-head-sub">Manage callers, outreachers and freelancers</div></div><button class="btn btn-primary">+ Add Member</button></div>
-<div class="grid-4">
-  <div class="metric"><div class="metric-label">Total Callers</div><div class="metric-value" style="color:var(--blue)">${callers.length}</div></div>
-  <div class="metric"><div class="metric-label">Avg Calls/Day</div><div class="metric-value" style="color:var(--teal)">37</div></div>
-  <div class="metric"><div class="metric-label">Avg Pickup Rate</div><div class="metric-value" style="color:var(--green)">31%</div></div>
-  <div class="metric"><div class="metric-label">Meetings This Week</div><div class="metric-value" style="color:var(--amber)">6</div></div>
+<div class="page-head">
+  <div>
+    <div class="page-head-title">Gestion des personnes</div>
+    <div class="page-head-sub">${totalCallers + totalOutreachers + totalFreelancers} membres d'équipe</div>
+  </div>
+  <button class="btn btn-primary" onclick="addPerson()">+ Ajouter</button>
 </div>
-<div class="card mt-16"><div class="card-header"><div class="card-title-lg">Caller Profiles & KPIs</div></div>
-<div class="table-wrap"></table><thead><tr><th>Name</th><th>Niche</th><th>Calls</th><th>Pickups</th><th>Meetings</th><th>Salary</th><th>Score</th></tr></thead>
-<tbody>${callers.map(c => `<tr><td><div style="display:flex;align-items:center;gap:8px;"><div class="avatar avatar-sm" style="background:var(--accent)">${c.name[0]}</div><div><div style="font-size:12px;font-weight:500">${c.name}</div><div style="font-size:10px;color:var(--text3)">${c.gmail}</div></div></div></td>
-<td><span class="badge badge-gray">${c.niche}</span></td><td style="font-family:var(--mono)">${c.calls}</td><td><div style="display:flex;align-items:center;gap:6px;"><span>${c.pickups}</span><span style="font-size:10px;color:var(--text3)">(${Math.round(c.pickups/c.calls*100)}%)</span></div></td>
-<td>${c.meetings}</td><td style="color:var(--green)">${c.salary}</td><td><span class="badge ${c.sc}">${c.score}</span></td></tr>`).join('')}</tbody></table></div></div>`;
+
+<div class="grid-4">
+  <div class="metric"><div class="metric-label">Appeleurs</div><div class="metric-value" style="color:var(--blue)">${totalCallers}</div></div>
+  <div class="metric"><div class="metric-label">Démarchage</div><div class="metric-value" style="color:var(--teal)">${totalOutreachers}</div></div>
+  <div class="metric"><div class="metric-label">Freelances</div><div class="metric-value" style="color:var(--green)">${totalFreelancers}</div></div>
+  <div class="metric"><div class="metric-label">Total</div><div class="metric-value" style="color:var(--amber)">${totalCallers + totalOutreachers + totalFreelancers}</div></div>
+</div>
+
+<div class="card mt-16">
+  <div class="card-header"><div class="card-title-lg">Liste des membres</div></div>
+  <div class="table-wrap">
+    <table style="width:100%">
+      <thead><tr><th>Nom</th><th>Rôle</th><th>Contact</th><th>Statut</th><th></th></tr></thead>
+      <tbody>
+        ${[...callers.map(c => ({...c, role: 'Appeleur'})), ...outreachers.map(o => ({...o, role: 'Démarchage'})), ...freelancers.map(f => ({...f, role: 'Freelance'}))].map(p => `
+          <tr>
+            <td><span style="font-weight:500">${p.name || '—'}</span></td>
+            <td><span class="badge badge-gray">${p.role}</span></td>
+            <td style="color:var(--text3)">${p.email || p.phone || '—'}</td>
+            <td><span class="badge badge-green">Actif</span></td>
+            <td><button class="btn btn-ghost" style="padding:4px 10px">✏️</button></td>
+          </tr>
+        `).join('')}
+        ${(callers.length + outreachers.length + freelancers.length) === 0 ? '<tr><td colspan="5" style="text-align:center;color:var(--text3);padding:40px">Aucun membre pour le moment.<br>Cliquez sur "Ajouter" pour commencer.</td></tr>' : ''}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+function addPerson() {
+  alert('Formulaire d\'ajout - à venir');
+}
+</script>
+  `;
 }

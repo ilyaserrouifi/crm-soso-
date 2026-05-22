@@ -1,52 +1,66 @@
 function renderPipeline() {
-  const stages = [
-    { id:'lead', label:'Lead', color:'var(--text3)', deals:[
-      { co:'TechVibe', val:'$6,400', person:'Sara K.', days:1, niche:'SaaS' },
-      { co:'BlueOcean', val:'$3,200', person:'James M.', days:2, niche:'Ecom' }
-    ]},
-    { id:'contacted', label:'Contacted', color:'var(--blue)', deals:[
-      { co:'Ripple Inc', val:'$7,200', person:'Lena T.', days:3, niche:'Finance' }
-    ]},
-    { id:'meeting', label:'Meeting', color:'var(--teal)', deals:[
-      { co:'Skyline HQ', val:'$5,600', person:'James M.', days:2, niche:'Agency' }
-    ]},
-    { id:'qualified', label:'Qualified', color:'var(--accent)', deals:[
-      { co:'Apex Labs', val:'$8,800', person:'Sara K.', days:2, niche:'SaaS' }
-    ]},
-    { id:'proposal', label:'Proposal', color:'var(--pink)', deals:[
-      { co:'TrueNorth', val:'$12,000', person:'Omar A.', days:5, niche:'Finance' }
-    ]},
-    { id:'negotiating', label:'Negotiating', color:'var(--amber)', deals:[
-      { co:'VaultBrand', val:'$9,600', person:'James M.', days:3, niche:'Agency' }
-    ]},
-    { id:'won', label:'Closed Won', color:'var(--green)', deals:[
-      { co:'StackFusion', val:'$4,800', person:'Sara K.', days:0, niche:'SaaS' }
-    ]},
-    { id:'lost', label:'Closed Lost', color:'var(--red)', deals:[
-      { co:'OldCorp', val:'$2,400', person:'Kevin L.', days:8, niche:'Retail' }
-    ]}
-  ];
+  // جلب البيانات الحقيقية
+  const deals = JSON.parse(localStorage.getItem('crm_deals') || '[]');
+  
+  const leadCount = deals.filter(d => d.stage === 'lead').length;
+  const contactedCount = deals.filter(d => d.stage === 'contacted').length;
+  const meetingCount = deals.filter(d => d.stage === 'meeting').length;
+  const proposalCount = deals.filter(d => d.stage === 'proposal').length;
+  const negotiatingCount = deals.filter(d => d.stage === 'negotiating').length;
+  const wonCount = deals.filter(d => d.stage === 'won').length;
+  const lostCount = deals.filter(d => d.stage === 'lost').length;
+  
+  const totalValue = deals.reduce((sum, d) => sum + (d.value || 0), 0);
+  
   return `
 <div class="page-head">
-  <div><div class="page-head-title">Sales Pipeline</div><div class="page-head-sub">8 stages · 13 active deals · $68,200 total value</div></div>
-  <div style="display:flex;gap:8px;"><button class="btn btn-ghost">Filter</button><button class="btn btn-primary">+ Add Lead</button></div>
+  <div>
+    <div class="page-head-title">Pipeline des ventes</div>
+    <div class="page-head-sub">${deals.length} transactions · Valeur totale: $${totalValue.toLocaleString()}</div>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-ghost" onclick="filterPipeline()">Filtrer</button>
+    <button class="btn btn-primary" onclick="addDeal()">+ Ajouter</button>
+  </div>
 </div>
-<div class="grid-4 mt-16" style="grid-template-columns:repeat(8,1fr)">
-  ${stages.map(s => `<div class="card-sm" style="text-align:center;border-top:2px solid ${s.color}"><div style="font-size:18px;font-weight:600;color:${s.color}">${s.deals.length}</div><div style="font-size:10px;color:var(--text3);margin-top:2px">${s.label}</div></div>`).join('')}
+
+<div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
+  <div class="card-sm" style="text-align:center;border-top:2px solid var(--text3)"><div style="font-weight:700">${leadCount}</div><div style="font-size:10px">Lead</div></div>
+  <div class="card-sm" style="text-align:center;border-top:2px solid var(--blue)"><div style="font-weight:700">${contactedCount}</div><div style="font-size:10px">Contacté</div></div>
+  <div class="card-sm" style="text-align:center;border-top:2px solid var(--teal)"><div style="font-weight:700">${meetingCount}</div><div style="font-size:10px">Rendez-vous</div></div>
+  <div class="card-sm" style="text-align:center;border-top:2px solid var(--accent)"><div style="font-weight:700">${proposalCount}</div><div style="font-size:10px">Proposition</div></div>
+  <div class="card-sm" style="text-align:center;border-top:2px solid var(--amber)"><div style="font-weight:700">${negotiatingCount}</div><div style="font-size:10px">Négociation</div></div>
+  <div class="card-sm" style="text-align:center;border-top:2px solid var(--green)"><div style="font-weight:700">${wonCount}</div><div style="font-size:10px">Gagné</div></div>
+  <div class="card-sm" style="text-align:center;border-top:2px solid var(--red)"><div style="font-weight:700">${lostCount}</div><div style="font-size:10px">Perdu</div></div>
 </div>
-<div class="kanban mt-20">
-  ${stages.map(s => `
+
+<div class="kanban">
+  ${[
+    { stage:'lead', label:'Lead', color:'var(--text3)', deals: deals.filter(d => d.stage === 'lead') },
+    { stage:'contacted', label:'Contacté', color:'var(--blue)', deals: deals.filter(d => d.stage === 'contacted') },
+    { stage:'meeting', label:'Rendez-vous', color:'var(--teal)', deals: deals.filter(d => d.stage === 'meeting') },
+    { stage:'proposal', label:'Proposition', color:'var(--accent)', deals: deals.filter(d => d.stage === 'proposal') },
+    { stage:'won', label:'Gagné', color:'var(--green)', deals: deals.filter(d => d.stage === 'won') }
+  ].map(s => `
     <div class="kanban-col">
       <div class="kanban-col-header"><div class="kanban-col-title" style="color:${s.color}">${s.label}</div><div class="kanban-col-count">${s.deals.length}</div></div>
-      ${s.deals.map(d => `
-        <div class="kanban-card">
-          <div class="kanban-card-title">${d.co}</div>
-          <div style="display:flex;justify-content:space-between;margin-top:6px;"><span style="font-size:12px;font-weight:600;color:${s.color}">${d.val}</span><span class="badge badge-gray" style="font-size:10px">${d.niche}</span></div>
-          <div style="display:flex;justify-content:space-between;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);"><span style="font-size:11px;color:var(--text3)">${d.person}</span><span style="font-size:10px;color:var(--text3)">${d.days}d</span></div>
+      ${s.deals.slice(0,3).map(d => `
+        <div class="kanban-card" onclick="viewDeal('${d.id}')">
+          <div class="kanban-card-title">${d.company || '—'}</div>
+          <div style="display:flex;justify-content:space-between;margin-top:6px;"><span style="font-size:12px;font-weight:600;color:${s.color}">$${(d.value || 0).toLocaleString()}</span><span class="badge badge-gray">${d.assigned || '—'}</span></div>
         </div>
       `).join('')}
-      <div style="margin-top:6px;padding:8px;border:1px dashed var(--border2);border-radius:var(--r);text-align:center;font-size:11px;color:var(--text3);cursor:pointer;">+ Add deal</div>
+      ${s.deals.length === 0 ? '<div class="empty-state" style="padding:20px;text-align:center;font-size:11px;color:var(--text3)">Aucune transaction</div>' : ''}
+      <div style="margin-top:8px;padding:8px;border:1px dashed var(--border2);border-radius:var(--r);text-align:center;font-size:11px;color:var(--text3);cursor:pointer;" onclick="addDealToStage('${s.stage}')">+ Ajouter</div>
     </div>
   `).join('')}
-</div>`;
+</div>
+
+<script>
+function filterPipeline() { alert('Filtres - à venir'); }
+function addDeal() { alert('Ajouter un deal'); }
+function addDealToStage(stage) { alert('Ajouter à ' + stage); }
+function viewDeal(id) { alert('Voir deal ' + id); }
+</script>
+  `;
 }
