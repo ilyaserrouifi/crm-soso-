@@ -1,156 +1,52 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>CRM-OS — Niche Consultation</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="assets/theme.css"/>
-<link rel="stylesheet" href="assets/style.css"/>
+  <meta charset="UTF-8">
+  <title>Niche CRM</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/theme.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="assets/map.js"></script>
 </head>
 <body>
-
-<div id="shell">
-
-  <nav id="sidebar">
-    <div class="sb-logo">
-      <div class="sb-logo-icon">CR</div>
-      <div>
-        <div class="sb-logo-name">CRM-OS</div>
-        <div class="sb-logo-sub">Niche Console</div>
-      </div>
+<div style="display:flex;min-height:100vh">
+  <aside style="width:260px;background:#0f111a;border-right:1px solid #1e293b">
+    <div class="sidebar-logo">
+      <div style="width:36px;height:36px;background:#38bdf8;border-radius:10px"></div>
+      <div><div class="sidebar-logo-text">Niche CRM</div><div class="sidebar-logo-version">v1.0</div></div>
     </div>
-    <div class="sb-section">
-      <div class="sb-section-label">Overview</div>
-      <div class="sb-item active" data-module="dashboard">
-        <span class="icon">⬡</span> Dashboard
-      </div>
+    <div class="sb-section"><div class="sb-section-label">PRINCIPAL</div></div>
+    <div class="sb-item active"><span class="icon">📊</span> Dashboard</div>
+    <div class="sb-item"><span class="icon">👥</span> People</div>
+    <div class="sb-item"><span class="icon">⟶</span> Pipeline</div>
+    <div class="sb-item"><span class="icon">📁</span> Projects</div>
+    <div class="sb-section mt-20"><div class="sb-section-label">CLIENT</div></div>
+    <div class="sb-item" onclick="window.location='client-portal.html'"><span class="icon">🌐</span> Portail client</div>
+  </aside>
+  
+  <main style="flex:1;padding:24px">
+    <h1 style="font-size:28px;margin-bottom:8px">Tableau de bord</h1>
+    <p style="color:#64748b;margin-bottom:24px">Bienvenue sur Niche CRM</p>
+    
+    <div class="grid-4">
+      <div class="metric"><div class="metric-label">💰 Revenus</div><div class="metric-value">0 €</div></div>
+      <div class="metric"><div class="metric-label">👥 Clients</div><div class="metric-value">0</div></div>
+      <div class="metric"><div class="metric-label">📁 Projets</div><div class="metric-value">0</div></div>
+      <div class="metric"><div class="metric-label">⭐ Deals</div><div class="metric-value">0</div></div>
     </div>
-    <div class="sb-section">
-      <div class="sb-section-label">Sales</div>
-      <div class="sb-item" data-module="pipeline">
-        <span class="icon">◈</span> Pipeline
-        <span class="sb-badge amber">12</span>
-      </div>
-      <div class="sb-item" data-module="clients">
-        <span class="icon">◉</span> Clients
-      </div>
+    
+    <div class="card mt-20">
+      <div class="card-header"><div class="card-title">🗺️ Localisation des clients</div><span class="badge-blue">3 clients</span></div>
+      <div id="client-map" style="height:350px;width:100%"></div>
     </div>
-    <div class="sb-section">
-      <div class="sb-section-label">Team</div>
-      <div class="sb-item" data-module="people">
-        <span class="icon">◎</span> People
-        <span class="sb-badge red">3</span>
-      </div>
-      <div class="sb-item" data-module="projects">
-        <span class="icon">▦</span> Projects
-      </div>
-    </div>
-    <div class="sb-section">
-      <div class="sb-section-label">Business</div>
-      <div class="sb-item" data-module="finance">
-        <span class="icon">◇</span> Finance
-      </div>
-      <div class="sb-item" data-module="analytics">
-        <span class="icon">▲</span> Analytics
-      </div>
-    </div>
-    <div class="sb-divider"></div>
-    <div class="sb-section">
-      <div class="sb-section-label">System</div>
-      <div class="sb-item" data-module="settings">
-        <span class="icon">⚙</span> Settings
-      </div>
-    </div>
-    <div class="sb-section">
-      <div class="sb-item" data-module="settings">
-        <span class="icon">⚙</span> Settings
-      </div>
-    </div>
-    <div class="sb-user">
-      <div class="sb-avatar">AD</div>
-      <div>
-        <div class="sb-user-name">Admin</div>
-        <div class="sb-user-role">Super Admin</div>
-      </div>
-    </div>
-  </nav>
-
-  <div id="main">
-    <header id="topbar">
-      <div>
-        <div class="topbar-crumb">CRM-OS / <span id="topbar-section">Dashboard</span></div>
-      </div>
-      <div class="topbar-actions">
-        <div class="icon-btn" data-tip="Search">⌕</div>
-        <div class="icon-btn" data-tip="Notifications">🔔</div>
-        <button class="btn btn-primary" id="topbar-action">+ Add</button>
-      </div>
-    </header>
-    <main id="page">
-      <div class="fade-in" id="module-container"></div>
-    </main>
-  </div>
+  </main>
 </div>
-
-<script src="modules/dashboard.js"></script>
-<script src="modules/pipeline.js"></script>
-<script src="modules/clients.js"></script>
-<script src="modules/people.js"></script>
-<script src="modules/projects.js"></script>
-<script src="modules/finance.js"></script>
-<script src="modules/analytics.js"></script>
-
 <script>
-const modules = {
-  dashboard: typeof renderDashboard !== 'undefined' ? renderDashboard : null,
-  pipeline:  typeof renderPipeline  !== 'undefined' ? renderPipeline  : null,
-  clients:   typeof renderClients   !== 'undefined' ? renderClients   : null,
-  people:    typeof renderPeople    !== 'undefined' ? renderPeople    : null,
-  projects:  typeof renderProjects  !== 'undefined' ? renderProjects  : null,
-  finance:   typeof renderFinance   !== 'undefined' ? renderFinance   : null,
-  analytics: typeof renderAnalytics !== 'undefined' ? renderAnalytics : null,
-  settings:  typeof renderSettings !== 'undefined' ? renderSettings : null,
-};
-
-const sectionNames = {
-  dashboard: 'Dashboard',
-  pipeline:  'Pipeline',
-  clients:   'Clients',
-  people:    'People',
-  projects:  'Projects',
-  finance:   'Finance',
-  analytics: 'Analytics',
-  settings:  'Settings',
-  settings:  'Settings',
-};
-
-let current = 'dashboard';
-
-function navigate(mod) {
-  current = mod;
-  document.querySelectorAll('.sb-item').forEach(el => {
-    el.classList.toggle('active', el.dataset.module === mod);
-  });
-  document.getElementById('topbar-section').textContent = sectionNames[mod] || mod;
-  const container = document.getElementById('module-container');
-  container.className = 'fade-in';
-  void container.offsetWidth;
-  const fn = modules[mod];
-  if (fn) {
-    container.innerHTML = fn();
-  } else {
-    container.innerHTML = '<div class="empty"><div class="empty-icon">🚧</div><div class="empty-text">' + (sectionNames[mod] || mod) + ' — coming soon</div></div>';
-  }
-}
-
-document.querySelectorAll('.sb-item[data-module]').forEach(el => {
-  el.addEventListener('click', () => navigate(el.dataset.module));
+document.addEventListener('DOMContentLoaded', function() {
+  if(typeof initMap === 'function') initMap('client-map');
 });
-
-navigate('dashboard');
 </script>
-
 </body>
 </html>

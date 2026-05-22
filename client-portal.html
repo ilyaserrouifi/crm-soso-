@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Client Portal — CRM-OS</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/theme.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <style>
+    .client-container { padding: 24px 32px; max-width: 1200px; margin: 0 auto; }
+    .client-header { margin-bottom: 32px; text-align: center; }
+    .client-header h1 { font-size: 28px; margin-bottom: 8px; }
+    .client-header p { color: var(--text-tertiary); }
+    .project-card-client { background: var(--bg-card); border: 1px solid var(--border-medium); border-radius: 16px; padding: 20px; margin-bottom: 16px; }
+    .project-title { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+    .project-progress { height: 8px; background: var(--bg-tertiary); border-radius: 4px; margin: 16px 0; overflow: hidden; }
+    .project-progress-fill { height: 100%; background: var(--accent); border-radius: 4px; width: 0%; }
+    .invoice-list { background: var(--bg-card); border: 1px solid var(--border-medium); border-radius: 16px; overflow: hidden; }
+    .invoice-item { display: flex; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--border-medium); }
+    .login-box { max-width: 400px; margin: 100px auto; background: var(--bg-card); border: 1px solid var(--border-medium); border-radius: 20px; padding: 32px; text-align: center; }
+    .login-box input { width: 100%; padding: 12px; margin: 10px 0; background: var(--bg-tertiary); border: 1px solid var(--border-medium); border-radius: 8px; color: var(--text-primary); }
+    .login-box button { width: 100%; padding: 12px; background: var(--accent); border: none; border-radius: 8px; color: #fff; font-weight: 600; cursor: pointer; }
+    .logout-btn { background: var(--bg-tertiary); border: 1px solid var(--border-medium); padding: 8px 16px; border-radius: 8px; cursor: pointer; margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+<div id="client-app">
+  <div class="client-container" id="client-content"></div>
+</div>
+
+<script>
+// Client Portal avec authentification simple
+let currentClient = null;
+
+const clients = [
+  { id: '1', name: 'TechCorp', email: 'client@techcorp.com', password: '1234', projects: [
+    { name: 'Campagne Ads', progress: 75, budget: 4800, due: '2026-05-31' },
+    { name: 'SEO Audit', progress: 40, budget: 1200, due: '2026-06-15' }
+  ], invoices: [
+    { month: 'Avril 2026', amount: 4800, status: 'Payé' },
+    { month: 'Mai 2026', amount: 4800, status: 'En attente' }
+  ]},
+  { id: '2', name: 'GrowthLabs', email: 'client@growthlabs.com', password: '1234', projects: [
+    { name: 'Site Web React', progress: 60, budget: 6400, due: '2026-06-10' }
+  ], invoices: [
+    { month: 'Avril 2026', amount: 3200, status: 'Payé' }
+  ]}
+];
+
+function renderLogin() {
+  return `
+    <div class="login-box">
+      <h2>🔐 Espace Client</h2>
+      <p style="margin-bottom: 20px; color: var(--text-tertiary)">Connectez-vous à votre espace</p>
+      <input type="email" id="login-email" placeholder="Email" value="client@techcorp.com">
+      <input type="password" id="login-password" placeholder="Mot de passe" value="1234">
+      <button onclick="login()">Se connecter</button>
+      <hr style="margin: 20px 0; border-color: var(--border-medium)">
+      <div style="font-size: 12px; color: var(--text-tertiary)">
+        <p>Démo: client@techcorp.com / 1234</p>
+        <p>client@growthlabs.com / 1234</p>
+      </div>
+    </div>
+  `;
+}
+
+function renderDashboard() {
+  return `
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+      <h1>Bienvenue, ${currentClient.name} 👋</h1>
+      <button class="logout-btn" onclick="logout()">🚪 Déconnexion</button>
+    </div>
+    
+    <div class="stats-grid" style="display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-bottom: 32px;">
+      <div class="stat-card"><div class="stat-value">${currentClient.projects.length}</div><div class="stat-label">Projets actifs</div></div>
+      <div class="stat-card"><div class="stat-value">${currentClient.projects.reduce((s,p)=>s+(p.budget||0),0).toLocaleString()} €</div><div class="stat-label">Budget total</div></div>
+      <div class="stat-card"><div class="stat-value">${currentClient.invoices.filter(i=>i.status==='En attente').length}</div><div class="stat-label">Factures impayées</div></div>
+    </div>
+    
+    <h3 style="margin: 24px 0 16px;">📁 Mes projets</h3>
+    ${currentClient.projects.map(p => `
+      <div class="project-card-client">
+        <div class="project-title">${p.name}</div>
+        <div>💰 Budget: ${p.budget.toLocaleString()} €</div>
+        <div>📅 Échéance: ${p.due}</div>
+        <div class="project-progress"><div class="project-progress-fill" style="width: ${p.progress}%"></div></div>
+        <div style="display: flex; justify-content: space-between;"><span>Progression</span><span>${p.progress}%</span></div>
+      </div>
+    `).join('')}
+    
+    <h3 style="margin: 24px 0 16px;">💰 Mes factures</h3>
+    <div class="invoice-list">
+      ${currentClient.invoices.map(i => `
+        <div class="invoice-item">
+          <span>${i.month}</span>
+          <span style="font-weight: 600">${i.amount.toLocaleString()} €</span>
+          <span class="badge ${i.status === 'Payé' ? 'badge-green' : 'badge-amber'}">${i.status}</span>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function login() {
+  const email = document.getElementById('login-email').value;
+  const password = document.getElementById('login-password').value;
+  const client = clients.find(c => c.email === email && c.password === password);
+  if (client) {
+    currentClient = client;
+    localStorage.setItem('client_session', JSON.stringify({ id: client.id, name: client.name }));
+    renderClientApp();
+  } else {
+    alert('Email ou mot de passe incorrect');
+  }
+}
+
+function logout() {
+  currentClient = null;
+  localStorage.removeItem('client_session');
+  renderClientApp();
+}
+
+function renderClientApp() {
+  const container = document.getElementById('client-content');
+  if (currentClient) {
+    container.innerHTML = renderDashboard();
+  } else {
+    container.innerHTML = renderLogin();
+  }
+}
+
+// Vérifier session existante
+const savedSession = localStorage.getItem('client_session');
+if (savedSession) {
+  const session = JSON.parse(savedSession);
+  const client = clients.find(c => c.id === session.id);
+  if (client) currentClient = client;
+}
+renderClientApp();
+</script>
+</body>
+</html>
