@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>CRM-OS — Niche Consultation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="assets/theme.css"/>
+<link rel="stylesheet" href="assets/style.css"/>
+</head>
+<body>
+
+<div id="shell">
+
+  <nav id="sidebar">
+    <div class="sb-logo">
+      <div class="sb-logo-icon">CR</div>
+      <div>
+        <div class="sb-logo-name">CRM-OS</div>
+        <div class="sb-logo-sub">Niche Console</div>
+      </div>
+    </div>
+    <div class="sb-section">
+      <div class="sb-section-label">Overview</div>
+      <div class="sb-item active" data-module="dashboard">
+        <span class="icon">⬡</span> Dashboard
+      </div>
+    </div>
+    <div class="sb-section">
+      <div class="sb-section-label">Sales</div>
+      <div class="sb-item" data-module="pipeline">
+        <span class="icon">◈</span> Pipeline
+        <span class="sb-badge amber">12</span>
+      </div>
+      <div class="sb-item" data-module="clients">
+        <span class="icon">◉</span> Clients
+      </div>
+    </div>
+    <div class="sb-section">
+      <div class="sb-section-label">Team</div>
+      <div class="sb-item" data-module="people">
+        <span class="icon">◎</span> People
+        <span class="sb-badge red">3</span>
+      </div>
+      <div class="sb-item" data-module="projects">
+        <span class="icon">▦</span> Projects
+      </div>
+    </div>
+    <div class="sb-section">
+      <div class="sb-section-label">Business</div>
+      <div class="sb-item" data-module="finance">
+        <span class="icon">◇</span> Finance
+      </div>
+      <div class="sb-item" data-module="analytics">
+        <span class="icon">▲</span> Analytics
+      </div>
+    </div>
+    <div class="sb-divider"></div>
+    <div class="sb-section">
+      <div class="sb-item" data-module="settings">
+        <span class="icon">⚙</span> Settings
+      </div>
+    </div>
+    <div class="sb-user">
+      <div class="sb-avatar">AD</div>
+      <div>
+        <div class="sb-user-name">Admin</div>
+        <div class="sb-user-role">Super Admin</div>
+      </div>
+    </div>
+  </nav>
+
+  <div id="main">
+    <header id="topbar">
+      <div>
+        <div class="topbar-crumb">CRM-OS / <span id="topbar-section">Dashboard</span></div>
+      </div>
+      <div class="topbar-actions">
+        <div class="icon-btn" data-tip="Search">⌕</div>
+        <div class="icon-btn" data-tip="Notifications">🔔</div>
+        <button class="btn btn-primary" id="topbar-action">+ Add</button>
+      </div>
+    </header>
+    <main id="page">
+      <div class="fade-in" id="module-container"></div>
+    </main>
+  </div>
+</div>
+
+<script src="modules/dashboard.js"></script>
+<script src="modules/pipeline.js"></script>
+<script src="modules/clients.js"></script>
+<script src="modules/people.js"></script>
+<script src="modules/projects.js"></script>
+<script src="modules/finance.js"></script>
+<script src="modules/analytics.js"></script>
+
+<script>
+const modules = {
+  dashboard: typeof renderDashboard !== 'undefined' ? renderDashboard : null,
+  pipeline:  typeof renderPipeline  !== 'undefined' ? renderPipeline  : null,
+  clients:   typeof renderClients   !== 'undefined' ? renderClients   : null,
+  people:    typeof renderPeople    !== 'undefined' ? renderPeople    : null,
+  projects:  typeof renderProjects  !== 'undefined' ? renderProjects  : null,
+  finance:   typeof renderFinance   !== 'undefined' ? renderFinance   : null,
+  analytics: typeof renderAnalytics !== 'undefined' ? renderAnalytics : null,
+  settings:  null,
+};
+
+const sectionNames = {
+  dashboard: 'Dashboard',
+  pipeline:  'Pipeline',
+  clients:   'Clients',
+  people:    'People',
+  projects:  'Projects',
+  finance:   'Finance',
+  analytics: 'Analytics',
+  settings:  'Settings',
+};
+
+let current = 'dashboard';
+
+function navigate(mod) {
+  current = mod;
+  document.querySelectorAll('.sb-item').forEach(el => {
+    el.classList.toggle('active', el.dataset.module === mod);
+  });
+  document.getElementById('topbar-section').textContent = sectionNames[mod] || mod;
+  const container = document.getElementById('module-container');
+  container.className = 'fade-in';
+  void container.offsetWidth;
+  const fn = modules[mod];
+  if (fn) {
+    container.innerHTML = fn();
+  } else {
+    container.innerHTML = '<div class="empty"><div class="empty-icon">🚧</div><div class="empty-text">' + (sectionNames[mod] || mod) + ' — coming soon</div></div>';
+  }
+}
+
+document.querySelectorAll('.sb-item[data-module]').forEach(el => {
+  el.addEventListener('click', () => navigate(el.dataset.module));
+});
+
+navigate('dashboard');
+</script>
+
+</body>
+</html>
